@@ -17,31 +17,32 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Shakibul Systems — Enterprise AI Automation & Secure Workflows",
+  title: "NexusFlow AI — Autonomous AI Pipelines & Enterprise Workflows",
   description:
-    "We build production-ready n8n + GPT-4o pipelines that auto-screen candidates, sync multi-app tech stacks, and route high-value leads in seconds. Deploy in 24 hours.",
+    "We build production-ready autonomous AI pipelines that auto-screen candidates, sync multi-app tech stacks, and route high-value leads in seconds. Deploy in 24 hours.",
   keywords: [
+    "NexusFlow AI",
     "AI automation",
+    "autonomous AI pipelines",
     "n8n workflows",
     "candidate screening",
     "smart scheduling",
     "enterprise automation",
-    "GPT-4o",
     "workflow automation",
     "secure AI systems",
   ],
   authors: [{ name: "Shakibul Bokhtiar", url: "https://shakibul.com" }],
   openGraph: {
-    title: "Shakibul Systems — Enterprise AI Automation",
+    title: "NexusFlow AI — Autonomous AI Pipelines",
     description:
       "Eliminate 15+ hours of manual admin work per week with autonomous AI pipelines. Deploy in 24 hours.",
     type: "website",
     locale: "en_US",
-    siteName: "Shakibul Systems",
+    siteName: "NexusFlow AI",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shakibul Systems — Enterprise AI Automation",
+    title: "NexusFlow AI — Autonomous AI Pipelines",
     description:
       "Production-ready AI pipelines that auto-screen candidates & sync your tech stack.",
   },

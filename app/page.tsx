@@ -237,9 +237,9 @@ export default function Home() {
             </div>
             <div className="hidden sm:block">
               <span className="font-bold text-lg text-white tracking-wide block leading-tight">
-                SHAKIBUL<span className="text-cyan-400">.SYSTEMS</span>
+                NEXUSFLOW<span className="text-cyan-400">.AI</span>
               </span>
-              <span className="text-[10px] text-slate-500 tracking-[0.2em] font-mono uppercase">Secure AI Automation</span>
+              <span className="text-[10px] text-slate-500 tracking-[0.2em] font-mono uppercase">Autonomous AI Pipelines</span>
             </div>
           </a>
 
@@ -272,7 +272,7 @@ export default function Home() {
         {/* Status badge */}
         <div className="hero-text-reveal inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-cyan-950/40 border border-cyan-500/20 text-cyan-300 text-xs font-mono tracking-wider mb-10 backdrop-blur-md">
           <span className="glow-dot glow-dot--sm" />
-          <span>ENTERPRISE AI SYSTEMS & SECURE WORKFLOW AUTOMATION</span>
+          <span>AUTONOMOUS AI PIPELINES & WORKFLOW ENGINEERING</span>
         </div>
 
         {/* Main headline */}
@@ -643,11 +643,11 @@ export default function Home() {
           <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
-          <span>SHAKIBUL SYSTEMS</span>
+          <span>NEXUSFLOW AI</span>
         </div>
-        <p className="text-xs text-slate-600 font-mono">Enterprise AI Systems & Secure Workflow Automation</p>
+        <p className="text-xs text-slate-600 font-mono">Autonomous AI Pipelines & Enterprise Workflow Engineering</p>
         <p className="text-xs text-slate-600">
-          © 2026 Shakibul Bokhtiar · All rights reserved ·{' '}
+          © 2026 NexusFlow AI · Founded by Shakibul Bokhtiar · All rights reserved ·{' '}
           <a href="mailto:contact@shakibul.com" className="text-cyan-500 hover:underline">contact@shakibul.com</a>
         </p>
       </footer>

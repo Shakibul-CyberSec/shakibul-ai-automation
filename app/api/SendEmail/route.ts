@@ -362,7 +362,7 @@ Reply directly to ${sanitizedData.name} by clicking "Reply".`;
     </div>
     
     <div class="footer">
-      <p>Sent from your website <strong>SHAKIBUL.SYSTEMS</strong> contact form.</p>
+      <p>Sent from your website <strong>NEXUSFLOW.AI</strong> contact form.</p>
       <p>Click "Reply" in your email client to respond directly to ${sanitizedData.name}.</p>
     </div>
   </div>
@@ -388,7 +388,7 @@ Reply directly to ${sanitizedData.name} by clicking "Reply".`;
     const transporter = createTransporter();
     
     const mailOptions = {
-      from: `"Shakibul Systems" <${recipientEmail}>`,
+      from: `"NexusFlow AI" <${recipientEmail}>`,
       to: recipientEmail,
       replyTo: `"${sanitizedData.name}" <${sanitizedData.email}>`,
       subject: emailSubject,
