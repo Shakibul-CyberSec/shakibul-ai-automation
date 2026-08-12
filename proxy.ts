@@ -353,8 +353,8 @@ export async function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   const isDev = process.env.NODE_ENV !== 'production';
-  const scriptSrc = `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval' 'unsafe-inline'" : ''} https://challenges.cloudflare.com;`;
-  const styleSrc = `style-src 'self' 'nonce-${nonce}' ${isDev ? "'unsafe-inline'" : ''} https://fonts.googleapis.com;`;
+  const scriptSrc = `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${isDev ? "'unsafe-eval'" : ''} https://challenges.cloudflare.com;`;
+  const styleSrc = `style-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://fonts.googleapis.com;`;
 
   const cspHeader = `
     default-src 'self';
