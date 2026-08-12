@@ -48,17 +48,95 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+import { headers } from "next/headers";
+import NonceScript from "./components/NonceScript";
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const headersList = await headers();
+  const nonce = headersList.get('x-nonce');
+
   return (
     <html
       lang="en"
       className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <head>
+      <head suppressHydrationWarning>
         <meta name="theme-color" content="#030712" />
         <link rel="icon" href="/favicon.ico" />
+
+        {/* Critical inline styles with nonce */}
+        {nonce && (
+          <style nonce={nonce} suppressHydrationWarning>
+            {`
+              body { 
+                margin: 0; 
+                padding: 0; 
+                overflow-x: hidden;
+              }
+              * { 
+                box-sizing: border-box; 
+              }
+            `}
+          </style>
+        )}
+
+        {/* Dynamic script & style nonce injection patch */}
+        {nonce && (
+          <script
+            nonce={nonce}
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  var originalCreateElement = document.createElement;
+                  document.createElement = function(tagName, options) {
+                    var el = originalCreateElement.call(document, tagName, options);
+                    var tag = tagName.toLowerCase();
+                    if (tag === 'style' || tag === 'script') {
+                      el.setAttribute('nonce', '${nonce}');
+                    } else if (tag === 'iframe') {
+                      Object.defineProperty(el, 'src', {
+                        get: function() { return this.getAttribute('src') || ''; },
+                        set: function(val) {
+                          if (val && (val.indexOf('vercel.live') > -1 || val.indexOf('vercel') > -1)) {
+                            val = 'about:blank';
+                          }
+                          this.setAttribute('src', val);
+                        },
+                        configurable: true
+                      });
+                    }
+                    return el;
+                  };
+
+                  var originalSetAttribute = Element.prototype.setAttribute;
+                  Element.prototype.setAttribute = function(name, value) {
+                    if (name && name.toLowerCase() === 'style') {
+                      var cssRules = (value || '').split(';');
+                      for (var i = 0; i < cssRules.length; i++) {
+                        var rule = cssRules[i].trim();
+                        if (!rule) continue;
+                        var colonIndex = rule.indexOf(':');
+                        if (colonIndex > -1) {
+                          var prop = rule.substring(0, colonIndex).trim();
+                          var val = rule.substring(colonIndex + 1).trim();
+                          this.style.setProperty(prop, val);
+                        }
+                      }
+                      return;
+                    }
+                    return originalSetAttribute.call(this, name, value);
+                  };
+                })();
+              `
+            }}
+          />
+        )}
       </head>
-      <body className="min-h-full w-full">{children}</body>
+      <body className="min-h-full w-full antialiased" suppressHydrationWarning>
+        <NonceScript nonce={nonce} />
+        {children}
+      </body>
     </html>
   );
 }
