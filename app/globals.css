@@ -1,0 +1,520 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════
+   SHAKIBUL SYSTEMS — Enterprise Design System
+   GPU-accelerated, 60fps animations, zero-lag
+   Fonts loaded via next/font/google in layout.tsx
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Design Tokens ── */
+:root {
+  --bg-void: #030712;
+  --bg-surface: #0a0f1a;
+  --bg-elevated: #111827;
+  --accent-cyan: #06d6f2;
+  --accent-emerald: #10b981;
+  --accent-violet: #8b5cf6;
+  --accent-rose: #f43f5e;
+  --glass-bg: rgba(10, 15, 30, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-glow: rgba(6, 214, 242, 0.08);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Base Reset (box-sizing only — don't override Tailwind utilities) ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-void);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+::selection {
+  background: rgba(6, 214, 242, 0.3);
+  color: #fff;
+}
+
+/* ── GPU Layer Promotion & Hardware Acceleration ── */
+.gpu {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* ═══════════════════════════════════════
+   MESH GRADIENT BACKGROUND (GPU Composited)
+   ═══════════════════════════════════════ */
+.mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+
+.mesh-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(75px);
+  opacity: 0.35;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  animation: orbFloat 25s infinite ease-in-out;
+}
+
+.mesh-orb--cyan {
+  width: 40vw; height: 40vw;
+  max-width: 550px; max-height: 550px;
+  background: radial-gradient(circle, rgba(6, 214, 242, 0.22), transparent 70%);
+  top: -10%; left: -5%;
+  animation-delay: 0s;
+}
+
+.mesh-orb--violet {
+  width: 45vw; height: 45vw;
+  max-width: 650px; max-height: 650px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.18), transparent 70%);
+  top: 30%; right: -15%;
+  animation-delay: -8s;
+  animation-duration: 28s;
+}
+
+.mesh-orb--emerald {
+  width: 35vw; height: 35vw;
+  max-width: 450px; max-height: 450px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.16), transparent 70%);
+  bottom: 5%; left: 15%;
+  animation-delay: -16s;
+  animation-duration: 24s;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  25% { transform: translate3d(30px, -20px, 0) scale(1.03); }
+  50% { transform: translate3d(-15px, 30px, 0) scale(0.97); }
+  75% { transform: translate3d(20px, 15px, 0) scale(1.04); }
+}
+
+/* Subtle grid overlay */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black, transparent);
+  contain: strict;
+}
+
+/* ═══════════════════════════════════════
+   GLASSMORPHISM SYSTEM (GPU Hardware Accelerated)
+   ═══════════════════════════════════════ */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transform: translateZ(0);
+}
+
+.glass-glow {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(6, 214, 242, 0.15);
+  box-shadow:
+    0 0 35px rgba(6, 214, 242, 0.06),
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transform: translateZ(0);
+}
+
+/* ═══════════════════════════════════════
+   3D CARD SYSTEM — Tilt on hover
+   ═══════════════════════════════════════ */
+.card-3d {
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  transition: transform 0.6s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo);
+}
+
+.card-3d:hover {
+  transform: translateY(-12px) rotateX(3deg) rotateY(-2deg) scale(1.02);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(6, 214, 242, 0.08);
+}
+
+.card-3d::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(6, 214, 242, 0.08), transparent 40%, rgba(139, 92, 246, 0.05));
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card-3d:hover::before { opacity: 1; }
+
+/* ═══════════════════════════════════════
+   SCROLL REVEAL ANIMATION SYSTEM
+   GPU-composited progressive reveals
+   ═══════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 50px, 0);
+  filter: blur(4px);
+  will-change: transform, opacity, filter;
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0px);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translate3d(-70px, 0, 0);
+  filter: blur(3px);
+  will-change: transform, opacity, filter;
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0px);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translate3d(70px, 0, 0);
+  filter: blur(3px);
+  will-change: transform, opacity, filter;
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0px);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.88) translate3d(0, 30px, 0);
+  filter: blur(4px);
+  will-change: transform, opacity, filter;
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1) translate3d(0, 0, 0);
+  filter: blur(0px);
+}
+
+/* Stagger children — cascading reveal */
+.stagger-children > .reveal:nth-child(1) { transition-delay: 0ms; }
+.stagger-children > .reveal:nth-child(2) { transition-delay: 120ms; }
+.stagger-children > .reveal:nth-child(3) { transition-delay: 240ms; }
+.stagger-children > .reveal:nth-child(4) { transition-delay: 360ms; }
+.stagger-children > .reveal:nth-child(5) { transition-delay: 480ms; }
+.stagger-children > .reveal:nth-child(6) { transition-delay: 600ms; }
+
+/* ═══════════════════════════════════════
+   TEXT EFFECTS
+   ═══════════════════════════════════════ */
+.gradient-text {
+  background: linear-gradient(135deg, #06d6f2 0%, #10b981 50%, #06d6f2 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 6s linear infinite;
+}
+
+.gradient-text-violet {
+  background: linear-gradient(135deg, #a78bfa 0%, #06d6f2 50%, #a78bfa 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 8s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Hero text entrance */
+.hero-text-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: heroReveal 1s var(--ease-out-expo) forwards;
+}
+
+.hero-text-reveal:nth-child(2) { animation-delay: 0.15s; }
+.hero-text-reveal:nth-child(3) { animation-delay: 0.3s; }
+.hero-text-reveal:nth-child(4) { animation-delay: 0.45s; }
+.hero-text-reveal:nth-child(5) { animation-delay: 0.6s; }
+
+@keyframes heroReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════
+   GLOW EFFECTS
+   ═══════════════════════════════════════ */
+.glow-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+  opacity: 0.5;
+}
+
+.glow-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-emerald);
+  box-shadow: 0 0 12px var(--accent-emerald), 0 0 24px rgba(16, 185, 129, 0.4);
+  animation: dotPulse 2s infinite ease-in-out;
+}
+
+.glow-dot--sm { width: 6px; height: 6px; }
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* Button shine sweep */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+}
+
+.btn-shine:hover::after { left: 120%; }
+
+/* ═══════════════════════════════════════
+   VIDEO PLAYER FRAME
+   ═══════════════════════════════════════ */
+.video-frame {
+  position: relative;
+  border-radius: 20px;
+  padding: 3px;
+  background: linear-gradient(135deg, rgba(6,214,242,0.3), rgba(139,92,246,0.2), rgba(16,185,129,0.2));
+  box-shadow:
+    0 0 60px rgba(6, 214, 242, 0.08),
+    0 30px 80px rgba(0, 0, 0, 0.6);
+  animation: borderRotate 8s linear infinite;
+  background-size: 300% 300%;
+}
+
+@keyframes borderRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.video-frame-inner {
+  border-radius: 17px;
+  overflow: hidden;
+  background: #000;
+}
+
+/* ═══════════════════════════════════════
+   PIPELINE CONNECTOR LINES
+   ═══════════════════════════════════════ */
+.pipeline-connector {
+  position: relative;
+}
+
+.pipeline-connector::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -24px;
+  width: 24px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-cyan), transparent);
+}
+
+.pipeline-connector:last-child::after { display: none; }
+
+/* ═══════════════════════════════════════
+   COUNTER ANIMATION
+   ═══════════════════════════════════════ */
+.counter-value {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ═══════════════════════════════════════
+   SLIDER STYLING
+   ═══════════════════════════════════════ */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: #1e293b;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-emerald));
+  border: 3px solid var(--bg-void);
+  box-shadow: 0 0 16px rgba(6, 214, 242, 0.5);
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-spring);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-emerald));
+  border: 3px solid var(--bg-void);
+  box-shadow: 0 0 16px rgba(6, 214, 242, 0.5);
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════
+   FORM INPUTS
+   ═══════════════════════════════════════ */
+.input-field {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field::placeholder { color: var(--text-muted); }
+
+.input-field:focus {
+  border-color: rgba(6, 214, 242, 0.5);
+  box-shadow: 0 0 0 3px rgba(6, 214, 242, 0.1);
+}
+
+/* ═══════════════════════════════════════
+   FLOATING PARTICLES (CSS only, GPU composited)
+   Zero inline styles — CSP safe
+   ═══════════════════════════════════════ */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(6, 214, 242, 0.4);
+  pointer-events: none;
+  bottom: -10px;
+  will-change: transform;
+  animation: particleFloat 15s infinite linear;
+}
+
+/* Individual particle positions & timings */
+.particle--0 { left: 15%; width: 2px; height: 2px; animation-delay: 0s;     animation-duration: 12s; }
+.particle--1 { left: 30%; width: 3px; height: 3px; animation-delay: 2.5s;   animation-duration: 15s; }
+.particle--2 { left: 45%; width: 4px; height: 4px; animation-delay: 5s;     animation-duration: 18s; }
+.particle--3 { left: 60%; width: 2px; height: 2px; animation-delay: 7.5s;   animation-duration: 21s; }
+.particle--4 { left: 75%; width: 3px; height: 3px; animation-delay: 10s;    animation-duration: 24s; }
+.particle--5 { left: 90%; width: 4px; height: 4px; animation-delay: 12.5s;  animation-duration: 27s; }
+
+@keyframes particleFloat {
+  0% { transform: translate3d(0, 0, 0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translate3d(50px, -100vh, 0); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal, .reveal-left, .reveal-right, .reveal-scale {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .hero-text-reveal { opacity: 1; transform: none; }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .mesh-orb { opacity: 0.25; }
+  .pipeline-connector::after { display: none; }
+  /* Slightly reduce reveal distances on mobile for snappier feel */
+  .reveal { transform: translate3d(0, 30px, 0); }
+  .reveal-left { transform: translate3d(-40px, 0, 0); }
+  .reveal-right { transform: translate3d(40px, 0, 0); }
+  .reveal-scale { transform: scale(0.92) translate3d(0, 20px, 0); }
+}
