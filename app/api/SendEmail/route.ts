@@ -3,6 +3,12 @@ import validator from 'validator';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 
+// Strip CRLF and control characters to prevent header injection (LOW-3)
+const stripCRLF = (input: any) => {
+  if (!input) return '';
+  return String(input).replace(/[\r\n\t\x00-\x1F\x7F]+/g, ' ').trim();
+};
+
 // Secure sanitization function — strips tags first, then attributes
 const sanitizeInput = (input: any, options: { ALLOWED_TAGS?: string[] } = {}) => {
   if (!input) return '';
@@ -33,8 +39,8 @@ const sanitizeInput = (input: any, options: { ALLOWED_TAGS?: string[] } = {}) =>
   return sanitized;
 };
 
-// Honeypot fields
-const HONEYPOT_FIELDS = ['website', 'phone_number', 'honey_company'];
+// Honeypot fields with autofill-resistant names (LOW-1)
+const HONEYPOT_FIELDS = ['bot_trap_secondary', 'company_fax_number', 'honey_company_url'];
 
 /* ---------- UPSTASH REDIS / IN-MEMORY RATE LIMITING ---------- */
 let kv: any = null;
@@ -146,6 +152,32 @@ async function isEmailRateLimited(email: string, now: number) {
   return false;
 }
 
+// IP-level rate-limiting defense-in-depth (MEDIUM-2)
+async function isIPRateLimited(ip: string, now: number) {
+  if (!ip || ip === 'unknown-ip' || ip === '127.0.0.1') return false;
+  const ipKey = `rl_ip:${ip}`;
+  
+  if (!kvAvailable || !kv) {
+    const record = emailTrackerMemory.get(ipKey) || { count: 0, start: now };
+    if (now - record.start > 10 * 60 * 1000) {
+      emailTrackerMemory.set(ipKey, { count: 1, start: now });
+      return false;
+    }
+    record.count++;
+    emailTrackerMemory.set(ipKey, record);
+    return record.count > 5;
+  }
+  try {
+    const count = await kv.incr(ipKey);
+    if (count === 1) {
+      await kv.expire(ipKey, 600); // 10 minutes window
+    }
+    return count > 5;
+  } catch {
+    return false;
+  }
+}
+
 // Space Mail configuration
 const EMAIL_CONFIG: any = {
   host: 'mail.spacemail.com',
@@ -163,17 +195,23 @@ const createTransporter = () => {
   return nodemailer.createTransport(EMAIL_CONFIG);
 };
 
-const getClientIP = (req: Request) => {
-  const vercelIP = req.headers.get('x-vercel-forwarded-for');
-  const cfConnectingIP = req.headers.get('cf-connecting-ip');
-  const realIP = req.headers.get('x-real-ip');
-  const xForwardedFor = req.headers.get('x-forwarded-for');
+// Trusted IP extraction prioritizing non-spoofable headers with format validation (LOW-4)
+// When TRUSTED_IP_HEADER is set (recommended in prod, e.g. 'x-vercel-forwarded-for' on Vercel
+// or 'cf-connecting-ip' behind Cloudflare), ONLY that platform-set header is trusted, which
+// prevents clients from spoofing x-forwarded-for/x-real-ip to bypass IP rate limiting.
+const getClientIP = (req: Request): string => {
+  const trustedHeader = process.env.TRUSTED_IP_HEADER;
+  const rawIP = trustedHeader
+    ? (req.headers.get(trustedHeader)?.split(',')[0]?.trim() || '')
+    : (
+        req.headers.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() ||
+        req.headers.get('cf-connecting-ip')?.trim() ||
+        req.headers.get('x-real-ip')?.trim() ||
+        req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        ''
+      );
 
-  return vercelIP?.split(',')[0]?.trim() ||
-         cfConnectingIP ||
-         realIP ||
-         xForwardedFor?.split(',')[0]?.trim() ||
-         'unknown-ip';
+  return validator.isIP(rawIP) ? rawIP : '127.0.0.1';
 };
 
 const detectSpamPatterns = (message: string) => {
@@ -196,7 +234,7 @@ const checkHoneypot = (body: any) => {
   return false;
 };
 
-// Turnstile Cloudflare CAPTCHA
+// Turnstile Cloudflare CAPTCHA verification
 const verifyTurnstile = async (token: string, ip: string) => {
   if (!process.env.TURNSTILE_SECRET_KEY) return { success: true };
   try {
@@ -222,6 +260,52 @@ export async function POST(req: Request) {
   const now = Date.now();
 
   try {
+    // 1. Strict Origin & Referer Validation (LOW-2)
+    const origin = req.headers.get('origin');
+    const referer = req.headers.get('referer');
+    const host = req.headers.get('host')?.toLowerCase();
+
+    const isAllowedHost = (hostname: string) => {
+      const h = hostname.toLowerCase();
+      return h === 'shakibul.com' || h === 'www.shakibul.com' || h === 'localhost' || h === '127.0.0.1' || (host && h === host);
+    };
+
+    if (origin) {
+      if (origin === 'null') {
+        return NextResponse.json({ error: 'Null origins are not permitted.' }, { status: 403 });
+      }
+      try {
+        const originUrl = new URL(origin);
+        if (!isAllowedHost(originUrl.hostname)) {
+          return NextResponse.json({ error: 'Unauthorized request origin.' }, { status: 403 });
+        }
+      } catch {
+        return NextResponse.json({ error: 'Malformed origin header.' }, { status: 403 });
+      }
+    } else if (referer) {
+      try {
+        const refererUrl = new URL(referer);
+        if (!isAllowedHost(refererUrl.hostname)) {
+          return NextResponse.json({ error: 'Unauthorized request referer.' }, { status: 403 });
+        }
+      } catch {
+        return NextResponse.json({ error: 'Malformed referer header.' }, { status: 403 });
+      }
+    } else {
+      // LOW-2 hardening: reject POSTs that omit BOTH Origin and Referer.
+      // Browsers always attach an Origin header to same-origin/cross-origin POST
+      // fetch/XHR; scripted clients commonly omit both, so absence is treated as untrusted.
+      return NextResponse.json({ error: 'Request origin could not be verified.' }, { status: 403 });
+    }
+
+    // 2. IP Rate-Limiting Check (MEDIUM-2)
+    if (await isIPRateLimited(ip, now)) {
+      return NextResponse.json(
+        { error: 'Too many requests from this network. Please wait a few minutes.' },
+        { status: 429 }
+      );
+    }
+
     let requestBody: any;
     try {
       requestBody = await req.json();
@@ -232,7 +316,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Honeypot check
+    // 3. Honeypot Check (LOW-1)
     if (checkHoneypot(requestBody)) {
       return NextResponse.json({
         success: true,
@@ -242,24 +326,24 @@ export async function POST(req: Request) {
 
     const { name, email, company, message, captchaToken } = requestBody;
 
-    // Email format validation
-    const trimmedEmail = email?.toString().trim().toLowerCase();
-    if (!trimmedEmail || !validator.isEmail(trimmedEmail)) {
+    // 4. Email format validation with CRLF stripping (LOW-3)
+    const cleanEmail = stripCRLF(email?.toString().trim().toLowerCase());
+    if (!cleanEmail || !validator.isEmail(cleanEmail)) {
       return NextResponse.json(
         { error: 'Please enter a valid business email address.' },
         { status: 400 }
       );
     }
 
-    // Email rate limiting & ban checks
-    if (await isEmailBanned(trimmedEmail)) {
+    // 5. Email rate limiting & ban checks
+    if (await isEmailBanned(cleanEmail)) {
       return NextResponse.json({
         success: true,
         message: "Thank you for reaching out! Your message has been sent successfully."
       });
     }
 
-    const emailLimit = await isEmailRateLimited(trimmedEmail, now);
+    const emailLimit = await isEmailRateLimited(cleanEmail, now);
     if (emailLimit) {
       const msg = emailLimit.reason === 'hour'
         ? `You've sent ${emailLimit.count} messages in the past hour. Please wait before sending another.`
@@ -267,23 +351,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: msg }, { status: 429 });
     }
 
-    // Turnstile verification if captcha token sent or secret present
-    if (captchaToken && process.env.TURNSTILE_SECRET_KEY) {
+    // 6. Turnstile verification if configured (MEDIUM-1)
+    if (process.env.TURNSTILE_SECRET_KEY) {
+      if (!captchaToken) {
+        return NextResponse.json({ error: 'Security verification required. Please complete the CAPTCHA.' }, { status: 403 });
+      }
       const captchaVerif = await verifyTurnstile(captchaToken, ip);
       if (!captchaVerif.success) {
         return NextResponse.json({ error: 'Security verification failed. Please try again.' }, { status: 403 });
       }
     }
 
-    // Required fields check
-    if (!name || !trimmedEmail || !message) {
+    // 7. Required fields check
+    if (!name || !cleanEmail || !message) {
       return NextResponse.json(
         { error: 'Please fill in all required fields (Name, Email, and Message).' },
         { status: 400 }
       );
     }
 
-    // Field length checks
+    // 8. Field length checks
     if (name.length > 80) {
       return NextResponse.json({ error: 'Name is too long (max 80 chars).' }, { status: 400 });
     }
@@ -294,22 +381,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Message is too long (max 3000 chars).' }, { status: 400 });
     }
 
-    // Spam pattern detection
+    // 9. Spam pattern detection
     if (detectSpamPatterns(message)) {
-      await banEmail(trimmedEmail);
+      await banEmail(cleanEmail);
       return NextResponse.json({
         success: true,
         message: "Thank you for reaching out! Your message has been sent successfully."
       });
     }
 
-    await trackEmailRequest(trimmedEmail, now);
+    await trackEmailRequest(cleanEmail, now);
 
-    // Input sanitization
+    // 10. Input sanitization with CRLF header protection (LOW-3)
     const sanitizedData = {
-      name: sanitizeInput(name),
-      email: trimmedEmail,
-      company: company ? sanitizeInput(company) : 'N/A',
+      name: stripCRLF(sanitizeInput(name)),
+      email: cleanEmail,
+      company: company ? stripCRLF(sanitizeInput(company)) : 'N/A',
       message: sanitizeInput(message, { ALLOWED_TAGS: ['br', 'p'] })
     };
 
@@ -331,6 +418,7 @@ ${sanitizedData.message}
 This message was sent from your AI Systems website contact form.
 Reply directly to ${sanitizedData.name} by clicking "Reply".`;
 
+    // 11. HTML Content with consistent escaping (INFO-2)
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -350,11 +438,11 @@ Reply directly to ${sanitizedData.name} by clicking "Reply".`;
   <div class="card">
     <h2 class="header">⚡ New AI Automation Project Request</h2>
     
-    <div className="field"><strong>Name:</strong> ${validator.escape(sanitizedData.name)}</div>
-    <div className="field"><strong>Email:</strong> <a href="mailto:${validator.escape(sanitizedData.email)}" style="color: #06b6d4;">${validator.escape(sanitizedData.email)}</a></div>
-    <div className="field"><strong>Company:</strong> ${validator.escape(sanitizedData.company)}</div>
-    <div className="field"><strong>Submitted:</strong> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })} (BD Time)</div>
-    <div className="field" style="font-size: 11px; color: #94a3b8;">Request ID: ${requestId}</div>
+    <div class="field"><strong>Name:</strong> ${validator.escape(sanitizedData.name)}</div>
+    <div class="field"><strong>Email:</strong> <a href="mailto:${validator.escape(sanitizedData.email)}" style="color: #06b6d4;">${validator.escape(sanitizedData.email)}</a></div>
+    <div class="field"><strong>Company:</strong> ${validator.escape(sanitizedData.company)}</div>
+    <div class="field"><strong>Submitted:</strong> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })} (BD Time)</div>
+    <div class="field" style="font-size: 11px; color: #94a3b8;">Request ID: ${requestId}</div>
 
     <h3 style="margin-top: 24px; color: #334155;">Workflow / Problem Description</h3>
     <div class="message-box">
@@ -362,21 +450,23 @@ Reply directly to ${sanitizedData.name} by clicking "Reply".`;
     </div>
     
     <div class="footer">
-      <p>Sent from your website <strong>NEXUSFLOW.AI</strong> contact form.</p>
-      <p>Click "Reply" in your email client to respond directly to ${sanitizedData.name}.</p>
+      <p>Sent from your website <strong>shakibul.com</strong> contact form.</p>
+      <p>Click "Reply" in your email client to respond directly to ${validator.escape(sanitizedData.name)}.</p>
     </div>
   </div>
 </body>
 </html>`;
 
     if (!process.env.EMAIL_PASSWORD || process.env.EMAIL_PASSWORD.trim() === '') {
-      // Development mode log if password not configured yet
-      console.log('--- [DEV EMAIL SUBMISSION LOG] ---');
-      console.log('To:', recipientEmail);
-      console.log('Subject:', emailSubject);
-      console.log('From:', sanitizedData.name, `<${sanitizedData.email}>`);
-      console.log('Message:', sanitizedData.message);
-      console.log('-----------------------------------');
+      // Development mode log with PII masked (INFO-3)
+      if (process.env.NODE_ENV !== 'production') {
+        const maskedEmail = sanitizedData.email.replace(/^(.{2})(.*)(@.*)$/, '$1***$3');
+        console.log('--- [DEV EMAIL SUBMISSION LOG (PII Masked)] ---');
+        console.log('Subject:', emailSubject);
+        console.log('From:', sanitizedData.name, `<${maskedEmail}>`);
+        console.log('Request ID:', requestId);
+        console.log('-----------------------------------------------');
+      }
 
       return NextResponse.json({
         success: true,
@@ -388,7 +478,7 @@ Reply directly to ${sanitizedData.name} by clicking "Reply".`;
     const transporter = createTransporter();
     
     const mailOptions = {
-      from: `"NexusFlow AI" <${recipientEmail}>`,
+      from: `"Shakibul Bokhtiar" <${recipientEmail}>`,
       to: recipientEmail,
       replyTo: `"${sanitizedData.name}" <${sanitizedData.email}>`,
       subject: emailSubject,
@@ -416,3 +506,4 @@ Reply directly to ${sanitizedData.name} by clicking "Reply".`;
     );
   }
 }
+

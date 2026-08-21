@@ -17,34 +17,33 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NexusFlow AI — Autonomous AI Pipelines & Enterprise Workflows",
+  title: "Shakibul Bokhtiar — AI & Workflow Automation Developer",
   description:
-    "We build production-ready autonomous AI pipelines that auto-screen candidates, sync multi-app tech stacks, and route high-value leads in seconds. Deploy in 24 hours.",
+    "I build custom, reliable workflow automations that connect your everyday tools, data, and operations with AI — engineered with strict data privacy and zero external data retention.",
   keywords: [
-    "NexusFlow AI",
+    "Shakibul Bokhtiar",
     "AI automation",
-    "autonomous AI pipelines",
     "n8n workflows",
-    "candidate screening",
-    "smart scheduling",
-    "enterprise automation",
     "workflow automation",
-    "secure AI systems",
+    "business process automation",
+    "secure automation pipelines",
+    "data privacy automation",
+    "custom integrations",
   ],
   authors: [{ name: "Shakibul Bokhtiar", url: "https://shakibul.com" }],
   openGraph: {
-    title: "NexusFlow AI — Autonomous AI Pipelines",
+    title: "Shakibul Bokhtiar — AI & Workflow Automation Developer",
     description:
-      "Eliminate 15+ hours of manual admin work per week with autonomous AI pipelines. Deploy in 24 hours.",
+      "Reliable workflow automations connecting your everyday business tools with AI, built with strict data privacy and zero third-party data retention.",
     type: "website",
     locale: "en_US",
-    siteName: "NexusFlow AI",
+    siteName: "Shakibul Bokhtiar",
   },
   twitter: {
     card: "summary_large_image",
-    title: "NexusFlow AI — Autonomous AI Pipelines",
+    title: "Shakibul Bokhtiar — AI & Workflow Automation Developer",
     description:
-      "Production-ready AI pipelines that auto-screen candidates & sync your tech stack.",
+      "Custom workflow automations that eliminate manual busywork, built with privacy-first standards.",
   },
   robots: { index: true, follow: true },
 };

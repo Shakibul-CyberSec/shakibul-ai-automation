@@ -113,14 +113,35 @@ function getIPSubnet(ip: string) {
 }
 
 /* ---------- IP EXTRACTION ---------- */
-function getClientIP(request: NextRequest) {
-  return (
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    request.headers.get('cf-connecting-ip') ??
-    request.headers.get('x-real-ip') ??
-    request.headers.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() ??
-    'unknown'
-  );
+function isValidIP(ip: string): boolean {
+  if (!ip || typeof ip !== 'string') return false;
+  // IPv4
+  if (/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
+    return true;
+  }
+  // IPv6
+  if (/^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/.test(ip)) {
+    return true;
+  }
+  return false;
+}
+
+function getClientIP(request: NextRequest): string {
+  // When TRUSTED_IP_HEADER is set (recommended in prod, e.g. 'x-vercel-forwarded-for' on Vercel
+  // or 'cf-connecting-ip' behind Cloudflare), ONLY that platform-set header is trusted, which
+  // prevents clients from spoofing x-forwarded-for/x-real-ip to bypass IP/subnet rate limiting.
+  const trustedHeader = process.env.TRUSTED_IP_HEADER;
+  const rawIP = trustedHeader
+    ? (request.headers.get(trustedHeader)?.split(',')[0]?.trim() ?? '')
+    : (
+        request.headers.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() ??
+        request.headers.get('cf-connecting-ip')?.trim() ??
+        request.headers.get('x-real-ip')?.trim() ??
+        request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+        ''
+      );
+
+  return isValidIP(rawIP) ? rawIP : '127.0.0.1';
 }
 
 /* ---------- RATE LIMIT TIER MANAGEMENT ---------- */
@@ -139,11 +160,31 @@ async function recordViolation(clientKey: string, subnetKey: string) {
     const violations = (await kvGet(KV_PREFIXES.VIOLATION + key)) || { count: 0, lastViolation: 0 };
     violations.count++;
     violations.lastViolation = now;
-    await kvSet(KV_PREFIXES.VIOLATION + key, violations, 48 * 60 * 60);
+    await kvSet(KV_PREFIXES.VIOLATION + key, violations, COOLDOWN_PERIOD / 1000);
+  }
+}
 
-    if (violations.count >= ESCALATION_THRESHOLD * 3) {
-      await kvSadd(KV_PREFIXES.SHADOW_BAN + 'set', key);
-    }
+/* ---------- RAPID-FIRE BURST DETECTION ---------- */
+function isBurstTraffic(record: any, now: number) {
+  if (!record || record.count <= 1) return false;
+  const timeDiff = now - record.lastRequest;
+  return timeDiff >= 800;
+}
+
+/* ---------- SUBNET-WIDE TRACKING (O(1) Atomic Counter) ---------- */
+async function getSubnetRequests(subnet: string, now: number, windowMs: number) {
+  const windowSlot = Math.floor(now / windowMs);
+  const subnetKey = `${KV_PREFIXES.SUBNET}${subnet}:${windowSlot}`;
+
+  if (!kvAvailable || !kv) {
+    const record = memoryCache.get(subnetKey);
+    return record?.count || 0;
+  }
+  try {
+    const count = await kv.get(subnetKey);
+    return typeof count === 'number' ? count : (count ? parseInt(String(count), 10) : 0);
+  } catch (error) {
+    return 0;
   }
 }
 
@@ -153,33 +194,6 @@ async function checkBehavior(clientKey: string, now: number) {
   if (!record || !record.lastRequest) return true;
   const timeDiff = now - record.lastRequest;
   return timeDiff >= 800;
-}
-
-/* ---------- SUBNET-WIDE TRACKING ---------- */
-async function getSubnetRequests(subnet: string, now: number, windowMs: number) {
-  if (!kvAvailable || !kv) {
-    let totalRequests = 0;
-    for (const [key, record] of memoryCache.entries()) {
-      if (key.startsWith(KV_PREFIXES.RATE_LIMIT) && key.includes(subnet + ':') && (now - record.start < windowMs)) {
-        totalRequests += record.count;
-      }
-    }
-    return totalRequests;
-  }
-  try {
-    const pattern = `${KV_PREFIXES.RATE_LIMIT}${subnet}:*`;
-    const keys = await kv.keys(pattern);
-    let totalRequests = 0;
-    for (const key of keys) {
-      const record = await kv.get(key);
-      if (record && (now - record.start < windowMs)) {
-        totalRequests += record.count;
-      }
-    }
-    return totalRequests;
-  } catch (error) {
-    return 0;
-  }
 }
 
 let lastCleanupTime = 0;

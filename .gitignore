@@ -33,6 +33,11 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# outreach campaign data — contains third-party PII / business-sensitive info (do NOT commit)
+/outreach_checkpoint.md
+/scripts/*.json
+/scripts/__pycache__/
+
 # vercel
 .vercel
 
