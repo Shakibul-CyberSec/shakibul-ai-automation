@@ -563,7 +563,7 @@ export default function Home() {
             <div className="p-8 rounded-2xl bg-[#030712]/80 border border-white/[0.06] text-center space-y-6 shadow-inner">
               <div>
                 <div className="text-xs text-slate-400 uppercase tracking-[0.2em] font-mono mb-2">Estimated Annual Savings</div>
-                <div className="text-5xl sm:text-6xl font-black gradient-text font-mono counter-value">
+                <div className="text-[clamp(1.5rem,7vw,2.5rem)] md:text-[clamp(2rem,3.6vw,3rem)] leading-none font-black gradient-text font-mono counter-value">
                   ${yearly.toLocaleString()}
                 </div>
                 <div className="text-[11px] text-emerald-400/90 font-mono mt-2">
