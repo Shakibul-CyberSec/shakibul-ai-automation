@@ -324,7 +324,7 @@ export async function POST(req: Request) {
       });
     }
 
-    const { name, email, company, message, captchaToken } = requestBody;
+    const { name, email, company, service, message, captchaToken } = requestBody;
 
     // 4. Email format validation with CRLF stripping (LOW-3)
     const cleanEmail = stripCRLF(email?.toString().trim().toLowerCase());
@@ -397,17 +397,19 @@ export async function POST(req: Request) {
       name: stripCRLF(sanitizeInput(name)),
       email: cleanEmail,
       company: company ? stripCRLF(sanitizeInput(company)) : 'N/A',
+      service: service ? stripCRLF(sanitizeInput(service)) : 'General Inquiry / Workflow Automation',
       message: sanitizeInput(message, { ALLOWED_TAGS: ['br', 'p'] })
     };
 
     const recipientEmail = process.env.EMAIL_USER || 'contact@shakibul.com';
-    const emailSubject = `🚀 New Client Request: ${sanitizedData.company !== 'N/A' ? sanitizedData.company : sanitizedData.name}`;
+    const emailSubject = `🚀 New Client Request: ${sanitizedData.company !== 'N/A' ? sanitizedData.company : sanitizedData.name} [${sanitizedData.service}]`;
 
     const plainText = `New Automation Project Request
 
 Name: ${sanitizedData.name}
 Email: ${sanitizedData.email}
 Company: ${sanitizedData.company}
+Service Interest: ${sanitizedData.service}
 Submitted: ${new Date().toLocaleString()}
 Request ID: ${requestId}
 
@@ -429,7 +431,7 @@ Reply directly to ${sanitizedData.name} by clicking "Reply".`;
     .card { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 32px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
     .header { color: #06b6d4; border-bottom: 2px solid #06b6d4; padding-bottom: 16px; margin-bottom: 24px; }
     .field { margin-bottom: 12px; }
-    .field strong { color: #475569; min-width: 90px; display: inline-block; }
+    .field strong { color: #475569; min-width: 120px; display: inline-block; }
     .message-box { background-color: #f1f5f9; padding: 20px; border-left: 4px solid #06b6d4; border-radius: 8px; margin-top: 12px; font-size: 15px; }
     .footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; text-align: center; }
   </style>
@@ -441,12 +443,13 @@ Reply directly to ${sanitizedData.name} by clicking "Reply".`;
     <div class="field"><strong>Name:</strong> ${validator.escape(sanitizedData.name)}</div>
     <div class="field"><strong>Email:</strong> <a href="mailto:${validator.escape(sanitizedData.email)}" style="color: #06b6d4;">${validator.escape(sanitizedData.email)}</a></div>
     <div class="field"><strong>Company:</strong> ${validator.escape(sanitizedData.company)}</div>
+    <div class="field"><strong>Service:</strong> <span style="background-color: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px; font-weight: 600;">${validator.escape(sanitizedData.service)}</span></div>
     <div class="field"><strong>Submitted:</strong> ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })} (BD Time)</div>
     <div class="field" style="font-size: 11px; color: #94a3b8;">Request ID: ${requestId}</div>
 
     <h3 style="margin-top: 24px; color: #334155;">Workflow / Problem Description</h3>
     <div class="message-box">
-      ${validator.escape(sanitizedData.message).replace(/\n/g, '<br>')}
+      ${validator.escape(sanitizedData.message).replace(/\\n/g, '<br>')}
     </div>
     
     <div class="footer">
@@ -495,7 +498,7 @@ Reply directly to ${sanitizedData.name} by clicking "Reply".`;
 
     return NextResponse.json({
       success: true,
-      message: "Thank you for reaching out! Your message has been sent successfully. I'll get back to you within 2 hours."
+      message: "Thank you for reaching out! Your message has been sent successfully. I'll get back to you within 1 business day."
     });
 
   } catch (error: any) {

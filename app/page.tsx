@@ -144,6 +144,7 @@ export default function Home() {
   const pipelineRef = useScrollReveal();
   const solutionsRef = useScrollReveal();
   const workRef = useScrollReveal();
+  const packagesRef = useScrollReveal();
   const calcRef = useScrollReveal();
   const securityRef = useScrollReveal();
   const contactRef = useScrollReveal();
@@ -162,7 +163,7 @@ export default function Home() {
   const counter1 = useCounter(100, 2000); // % Data Stays In Your Own Accounts
   const counter2 = useCounter(24, 1600);  // Hours To First Working Prototype
   const counter3 = useCounter(100, 2000); // % Workflow & Code Ownership
-  const counter4 = useCounter(2, 1400);   // Hour Response Guarantee
+  const counter4 = useCounter(1, 1400);   // Business-Day Reply
 
   // Contact Form State
   const [submitted, setSubmitted] = useState(false);
@@ -177,6 +178,7 @@ export default function Home() {
     name: '',
     email: '',
     company: '',
+    service: 'Free 30-Min Security & Workflow Audit',
     message: '',
     bot_trap_secondary: '',
     company_fax_number: '',
@@ -266,15 +268,16 @@ export default function Home() {
               <span className="font-bold text-lg text-white tracking-wide block leading-tight">
                 SHAKIBUL<span className="text-cyan-400"> BOKHTIAR</span>
               </span>
-              <span className="text-[10px] text-slate-500 tracking-[0.2em] font-mono uppercase">AI Workflow & Systems Developer</span>
+              <span className="text-[10px] text-slate-400 tracking-[0.18em] font-mono uppercase">AI Systems &amp; Automation Engineer</span>
             </div>
           </a>
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+          <div className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
             {[
               { label: 'Capabilities', id: 'solutions' },
               { label: 'Process', id: 'architecture' },
               { label: 'Prototypes', id: 'work' },
+              { label: 'Engagement', id: 'packages' },
               { label: 'Estimate', id: 'roi' },
               { label: 'Privacy', id: 'security' },
               { label: 'Contact', id: 'contact' },
@@ -292,9 +295,9 @@ export default function Home() {
 
           <a
             href="#contact"
-            className="btn-shine px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-500 text-black font-bold text-sm shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2"
+            className="btn-shine px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-500 text-black font-bold text-xs sm:text-sm shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2"
           >
-            <span>Get In Touch</span>
+            <span>Book Free Audit</span>
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
           </a>
         </div>
@@ -304,59 +307,59 @@ export default function Home() {
       <section id="hero" className="relative z-10 pt-40 pb-28 px-6 lg:px-8 max-w-7xl mx-auto text-center" ref={heroRef}>
 
         {/* Status badge */}
-        <div className="hero-text-reveal inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-cyan-950/40 border border-cyan-500/20 text-cyan-300 text-xs font-mono tracking-wider mb-10 backdrop-blur-md">
+        <div className="hero-text-reveal inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-cyan-950/40 border border-cyan-500/25 text-cyan-300 text-xs font-mono tracking-wider mb-10 backdrop-blur-md">
           <span className="glow-dot glow-dot--sm" />
-          <span>CUSTOM AI AUTOMATION & WORKFLOW SYSTEMS</span>
+          <span>🔒 SECURITY-FIRST AI AUTOMATION &amp; INTERNAL SYSTEMS</span>
         </div>
 
         {/* Main headline */}
         <h1 className="hero-text-reveal text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white max-w-5xl mx-auto leading-[1.08] mb-8">
-          I Automate Your{' '}
-          <span className="gradient-text">Repetitive Workflows</span>
+          I Build Secure{' '}
+          <span className="gradient-text">AI Pipelines</span>
           <br className="hidden sm:block" />
-          {' '}With Smart, Secure{' '}
-          <span className="gradient-text-violet">AI Pipelines</span>
+          {' '}&amp; Custom{' '}
+          <span className="gradient-text-violet">Internal Systems</span>
         </h1>
 
         {/* Subtext */}
         <p className="hero-text-reveal text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-10">
-          I&apos;m Shakibul — an independent automation developer. I build custom, reliable workflow automations that connect your everyday tools, data, and business operations with AI — eliminating repetitive manual busywork while keeping your information private and secure.
+          I&apos;m Shakibul — an independent systems &amp; automation engineer. I build custom, reliable AI pipelines, forensic contract/document intelligence, and private internal tools that eliminate operational bottlenecks while ensuring zero data leakage and 100% client data sovereignty.
         </p>
 
         {/* Supported Tech Stack Pills */}
         <div className="hero-text-reveal flex flex-wrap items-center justify-center gap-3 max-w-4xl mx-auto mb-14 font-mono text-xs text-slate-300">
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/20 backdrop-blur-md">
-            <span className="text-cyan-400 font-bold">⚙️ Tools:</span>
+            <span className="text-cyan-400 font-bold">⚙️ Workflows:</span>
             <span>n8n • Make • Python • Webhooks</span>
           </div>
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-violet-500/20 backdrop-blur-md">
-            <span className="text-violet-400 font-bold">🧠 AI:</span>
-            <span>OpenAI • Claude • Custom Prompts</span>
+            <span className="text-violet-400 font-bold">🧠 Deep AI:</span>
+            <span>Claude Opus • OpenAI • Forensic Analysis</span>
           </div>
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-emerald-500/20 backdrop-blur-md">
-            <span className="text-emerald-400 font-bold">🔌 Connectors:</span>
-            <span>CRMs • Google Sheets • Airtable • APIs</span>
+            <span className="text-emerald-400 font-bold">🛠️ Custom Tools:</span>
+            <span>Web Portals • Private Dashboards • APIs</span>
           </div>
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/20 backdrop-blur-md">
             <span className="text-cyan-400 font-bold">🛡️ Data Privacy:</span>
-            <span>100% In Your Accounts • Encrypted</span>
+            <span>100% In Your Accounts • Security Trained</span>
           </div>
         </div>
 
         {/* CTA row */}
         <div className="hero-text-reveal flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
           <a
-            href="#work"
-            className="btn-shine group px-10 py-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-400 bg-[length:200%_auto] hover:bg-right transition-all duration-700 text-black font-bold text-base shadow-2xl shadow-cyan-500/25 hover:scale-105 active:scale-95 flex items-center gap-3"
+            href="#contact"
+            className="btn-shine group px-9 py-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-400 bg-[length:200%_auto] hover:bg-right transition-all duration-700 text-black font-bold text-base shadow-2xl shadow-cyan-500/25 hover:scale-105 active:scale-95 flex items-center gap-3"
           >
-            <span>See Working Demos</span>
+            <span>Book 30-Min Security &amp; Workflow Audit</span>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
           </a>
           <a
-            href="#architecture"
-            className="px-10 py-4 rounded-2xl glass text-white font-semibold text-base hover:border-cyan-500/30 transition-all duration-500 flex items-center gap-2 group"
+            href="#work"
+            className="px-8 py-4 rounded-2xl glass text-white font-semibold text-base hover:border-cyan-500/30 transition-all duration-500 flex items-center gap-2 group"
           >
-            <span>How It Works</span>
+            <span>Explore Working Demos</span>
             <svg className="w-5 h-5 text-slate-400 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
           </a>
         </div>
@@ -367,13 +370,13 @@ export default function Home() {
             { ref: counter1, label: 'Data In Your Accounts', suffix: '%', color: 'text-cyan-400' },
             { ref: counter2, label: 'Hours To First Prototype', suffix: 'h', color: 'text-emerald-400' },
             { ref: counter3, label: 'Client Code Ownership', suffix: '%', color: 'text-violet-400' },
-            { ref: counter4, label: 'Hour Response Guarantee', suffix: 'h', color: 'text-white' },
+            { ref: counter4, label: 'Business-Day Reply', suffix: 'd', color: 'text-white' },
           ].map((metric, i) => (
             <div key={i} ref={metric.ref.ref} className="glass p-5 rounded-2xl text-center group hover:border-cyan-500/20 transition-all duration-500">
               <div className={`text-3xl font-black font-mono counter-value ${metric.color}`}>
                 {metric.ref.count}{metric.suffix}
               </div>
-              <div className="text-xs text-slate-500 mt-1.5 font-medium">{metric.label}</div>
+              <div className="text-xs text-slate-400 mt-1.5 font-medium">{metric.label}</div>
             </div>
           ))}
         </div>
@@ -386,15 +389,16 @@ export default function Home() {
       <section id="architecture" className="relative z-10 py-24 px-6 lg:px-8 max-w-7xl mx-auto" ref={pipelineRef}>
         <div className="text-center mb-16 reveal">
           <p className="text-violet-400 font-mono text-xs font-bold uppercase tracking-[0.25em] mb-3">● How I Work</p>
-          <h2 className="text-3xl sm:text-5xl font-black text-white">How I Build <span className="gradient-text-violet">Your Pipeline</span></h2>
+          <h2 className="text-3xl sm:text-5xl font-black text-white">How I Build <span className="gradient-text-violet">Your Systems</span></h2>
+          <p className="text-slate-400 text-sm max-w-2xl mx-auto mt-4">A disciplined, security-first methodology designed to eliminate manual bottlenecks without introducing operational fragility.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 stagger-children">
           {[
-            { step: '01', title: 'Data Intake & Webhooks', desc: 'Ingests candidate, customer, or lead submissions instantly from webforms, APIs, or email streams.', color: 'from-cyan-400 to-cyan-600', borderColor: 'border-cyan-400/40' },
-            { step: '02', title: 'AI Intelligence Engine', desc: 'Evaluates & scores incoming data against your business criteria using LLMs.', color: 'from-violet-400 to-violet-600', borderColor: 'border-violet-400/40' },
-            { step: '03', title: 'Smart Router & Action', desc: 'High-priority items trigger calendar invites, alerts, or an automated response.', color: 'from-emerald-400 to-emerald-600', borderColor: 'border-emerald-400/40' },
-            { step: '04', title: 'Multi-System Sync', desc: 'Synchronizes structured records across your CRM/database and notifies your team in real time.', color: 'from-cyan-400 to-emerald-500', borderColor: 'border-cyan-400/40' },
+            { step: '01', title: 'Forensic Intake & Discovery', desc: 'Audit manual friction, review vendor contracts/SLAs, and identify high-ROI automation targets and security risks.', color: 'from-cyan-400 to-cyan-600', borderColor: 'border-cyan-400/40' },
+            { step: '02', title: 'AI Intelligence Engine', desc: 'Deploy deep reasoning models (Claude/OpenAI) to extract fine-print logic, evaluate submissions, and validate data.', color: 'from-violet-400 to-violet-600', borderColor: 'border-violet-400/40' },
+            { step: '03', title: 'Private Orchestration', desc: 'Connect webhooks, rate-limited proxies, and automated dispatchers to alert teams across Slack, WhatsApp, or Email.', color: 'from-emerald-400 to-emerald-600', borderColor: 'border-emerald-400/40' },
+            { step: '04', title: 'Multi-System Sync & Custom UI', desc: 'Sync clean structured records to your CRMs/databases or deploy custom private web dashboards for your team.', color: 'from-cyan-400 to-emerald-500', borderColor: 'border-cyan-400/40' },
           ].map((item, i) => (
             <div key={i} className={`reveal glass p-7 rounded-2xl border-t-2 ${item.borderColor} pipeline-connector card-3d relative`}>
               <div className={`inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${item.color} text-black font-mono font-black text-sm mb-5 shadow-lg`}>
@@ -413,52 +417,52 @@ export default function Home() {
       <section id="solutions" className="relative z-10 py-24 px-6 lg:px-8 max-w-7xl mx-auto" ref={solutionsRef}>
         <div className="text-center mb-16 reveal">
           <p className="text-emerald-400 font-mono text-xs font-bold uppercase tracking-[0.25em] mb-3">● Core Capabilities</p>
-          <h2 className="text-3xl sm:text-5xl font-black text-white">Custom Workflows I <span className="gradient-text">Automate</span></h2>
-          <p className="text-slate-400 text-sm max-w-2xl mx-auto mt-4">Whatever manual repetitive process slows your team down, I can build an automated, reliable pipeline for it.</p>
+          <h2 className="text-3xl sm:text-5xl font-black text-white">Custom Systems &amp; <span className="gradient-text">Workflows</span></h2>
+          <p className="text-slate-400 text-sm max-w-2xl mx-auto mt-4">High-impact automation solutions engineered for accuracy, speed, and strict data confidentiality.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 stagger-children">
           {[
             {
-              icon: '📥',
-              title: 'Inquiry & Intake Qualification',
-              desc: 'Parse incoming customer inquiries, job applications, or form submissions, score urgency/fit using AI models, and route them instantly.',
-              features: ['Instant Lead/Intake Scoring', 'Smart Routing Rules', 'Zero Form Submission Lag'],
+              icon: '📜',
+              title: 'Forensic Document & Contract Intelligence',
+              desc: 'Ingest 100+ page vendor agreements, commercial leases, and technical specs. Automatically extract non-standard clauses, SLA liabilities, overbilling risks, and renewal deadlines directly into your operational systems.',
+              features: ['SLA & Liability Extraction', 'Auto-Renewal & Cost Flags', 'Structured Risk Analysis'],
               borderColor: 'border-t-cyan-400',
+            },
+            {
+              icon: '📥',
+              title: 'Autonomous Intake & Lead Qualification',
+              desc: 'Parse incoming customer inquiries, RFPs, or job submissions, score urgency and fit using AI models, and route them instantly with zero human lag.',
+              features: ['Instant Scoring & Tiering', 'Smart Contextual Routing', 'Zero Form Submission Lag'],
+              borderColor: 'border-t-violet-400',
             },
             {
               icon: '🔄',
               title: 'Multi-App Tech Stack Data Sync',
-              desc: 'Keep your CRMs, Google Sheets, Airtable, Notion, and internal databases automatically in sync without manual CSV exports.',
-              features: ['2-Way Real-Time Sync', 'Zero Manual Copy-Pasting', 'Built-in Error Recovery'],
-              borderColor: 'border-t-violet-400',
-            },
-            {
-              icon: '📅',
-              title: 'Operational Dispatch & Scheduling',
-              desc: 'Match incoming requests to team calendar slots, auto-dispatch booking links, and send instant alerts to your team on Slack or Email.',
-              features: ['Multi-Timezone Auto Sync', 'Real-Time Team Alerts', '1-Click Booking Links'],
+              desc: 'Keep your CRMs, Google Sheets, Airtable, Notion, and internal SQL databases automatically in sync without manual CSV exports.',
+              features: ['2-Way Real-Time Sync', 'Zero Duplicate Records', 'Built-in Error Recovery'],
               borderColor: 'border-t-emerald-400',
             },
             {
-              icon: '📄',
-              title: 'Document & Data Extraction',
-              desc: 'Extract structured data points from incoming PDFs, resumes, invoices, or quote requests directly into your central spreadsheet or CRM.',
-              features: ['Automated Field Parsing', 'Clean Database Formatting', 'Fewer Data-Entry Errors'],
+              icon: '💻',
+              title: 'Bespoke Internal AI Portals & Micro-Tools',
+              desc: 'When standard off-the-shelf software falls short, I engineer lightweight internal web applications, intake portals, and executive review consoles tailored to your exact workflows.',
+              features: ['Custom Web UI & Dashboards', 'Role-Based Access Control', 'Direct Database Connectors'],
               borderColor: 'border-t-cyan-400',
             },
             {
               icon: '🧠',
-              title: 'Custom Internal Knowledge Assistants',
-              desc: 'Private AI search and assistants connected directly to your internal SOPs, Notion docs, and spreadsheets for instant answers.',
-              features: ['Runs In Your Private Tools', 'Fast Information Retrieval', 'Instant SOP Guidance'],
+              title: 'Private SOP & Knowledge Base Assistants',
+              desc: 'Private AI search and assistants connected directly to your internal SOPs, Notion docs, and databases for instant, hallucination-free operational answers.',
+              features: ['Grounded in Private SOPs', 'Zero Public LLM Training', 'Instant Information Search'],
               borderColor: 'border-t-violet-400',
             },
             {
               icon: '🛡️',
-              title: 'Private & Secure Cloud Workflows',
-              desc: 'Custom webhook endpoints, rate-limited middleware proxies, and encrypted API key vaults — built so your customer data and confidential business credentials never leak or get exposed.',
-              features: ['AES-256 Encryption', 'Zero External Data Storage', 'Scoped Access Tokens'],
+              title: 'Zero-Trust Private Cloud Pipelines',
+              desc: 'Custom webhook endpoints, rate-limited middleware proxies, and encrypted API key vaults — built so your customer data and confidential business credentials never leak.',
+              features: ['Encrypted Credential Storage', 'Zero External Data Storage', 'Strict Scoped Token Access'],
               borderColor: 'border-t-emerald-400',
             },
           ].map((item, i) => (
@@ -487,36 +491,189 @@ export default function Home() {
       <section id="work" className="relative z-10 py-24 px-6 lg:px-8 max-w-7xl mx-auto" ref={workRef}>
         <div className="text-center mb-16 reveal">
           <p className="text-cyan-400 font-mono text-xs font-bold uppercase tracking-[0.25em] mb-3">● Proof, Not Promises</p>
-          <h2 className="text-3xl sm:text-5xl font-black text-white">Working <span className="gradient-text">Demos & Prototypes</span></h2>
-          <p className="text-slate-400 text-sm max-w-2xl mx-auto mt-4">I believe in showing working systems before asking for commitments. Here are live prototypes I&apos;ve engineered that can be adapted for your specific operations.</p>
+          <h2 className="text-3xl sm:text-5xl font-black text-white">Working <span className="gradient-text">Demos &amp; Prototypes</span></h2>
+          <p className="text-slate-400 text-sm max-w-2xl mx-auto mt-4">I believe in demonstrating functioning systems before asking for commitments. Here are engineered architectures ready to be customized for your operations.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="reveal glass p-8 rounded-3xl border-t-2 border-t-cyan-400 card-3d">
-            <span className="text-4xl block mb-6">📋</span>
-            <h3 className="text-xl font-bold text-white mb-3">Autonomous Intake & Screening Pipeline</h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              A live n8n workflow that ingests applications and inquiries, evaluates responses against custom scoring criteria using AI, and syncs structured records to Google Sheets and CRMs in under 3 seconds.
-            </p>
-            <a href="#contact" className="text-cyan-400 text-sm font-semibold hover:underline">Request a live video demo →</a>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="reveal glass p-8 rounded-3xl border-t-2 border-t-cyan-400 card-3d flex flex-col justify-between">
+            <div>
+              <span className="text-4xl block mb-5">📋</span>
+              <h3 className="text-xl font-bold text-white mb-3">Autonomous Intake &amp; Screening Pipeline</h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                A live n8n workflow that ingests candidate and customer submissions, scores responses against custom business logic using LLMs, and syncs structured records to Google Sheets and CRMs in under 3 seconds.
+              </p>
+            </div>
+            <a href="/demos/intake" className="text-cyan-400 text-sm font-semibold hover:underline inline-flex items-center gap-1.5">
+              <span>Try the live demo</span>
+              <span>→</span>
+            </a>
           </div>
 
-          <div className="reveal glass p-8 rounded-3xl border-t-2 border-t-emerald-400 card-3d">
-            <span className="text-4xl block mb-6">🔄</span>
-            <h3 className="text-xl font-bold text-white mb-3">Multi-App Operational Sync Engine</h3>
-            <p className="text-slate-400 text-sm leading-relaxed mb-4">
-              A 2-way sync bridge connecting web forms, internal spreadsheets, and team notification channels (Email, Slack, WhatsApp) with automatic error recovery and zero duplicate entries.
-            </p>
-            <a href="#contact" className="text-emerald-400 text-sm font-semibold hover:underline">Discuss a custom pipeline →</a>
+          <div className="reveal glass p-8 rounded-3xl border-t-2 border-t-violet-400 card-3d flex flex-col justify-between">
+            <div>
+              <span className="text-4xl block mb-5">📜</span>
+              <h3 className="text-xl font-bold text-white mb-3">Forensic Document &amp; Contract Risk Analyzer</h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                A multi-step reasoning agent that scans dense vendor agreements, SLAs, and commercial contracts to flag non-standard liability clauses, price escalation traps, and renewal deadlines.
+              </p>
+            </div>
+            <a href="/demos/contract" className="text-violet-400 text-sm font-semibold hover:underline inline-flex items-center gap-1.5">
+              <span>Try the live demo</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div className="reveal glass p-8 rounded-3xl border-t-2 border-t-emerald-400 card-3d flex flex-col justify-between">
+            <div>
+              <span className="text-4xl block mb-5">💬</span>
+              <h3 className="text-xl font-bold text-white mb-3">Grounded Knowledge &amp; Support Assistant</h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                A retrieval-grounded chat assistant that answers customer questions in English or Banglish, cites the exact source behind every reply, and refuses to guess when something falls outside its knowledge — so it never invents an answer.
+              </p>
+            </div>
+            <a href="/demos/assistant" className="text-emerald-400 text-sm font-semibold hover:underline inline-flex items-center gap-1.5">
+              <span>Try the live demo</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div className="reveal glass p-8 rounded-3xl border-t-2 border-t-amber-400 card-3d flex flex-col justify-between">
+            <div>
+              <span className="text-4xl block mb-5">📊</span>
+              <h3 className="text-xl font-bold text-white mb-3">Live Operations Command Center</h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                A real-time board that turns the leads your pipeline scores into live operational intelligence — temperature, routing, and response time streaming onto one screen, so your team acts on the hottest opportunities the moment they land.
+              </p>
+            </div>
+            <a href="/demos/command-center" className="text-amber-400 text-sm font-semibold hover:underline inline-flex items-center gap-1.5">
+              <span>Try the live demo</span>
+              <span>→</span>
+            </a>
           </div>
         </div>
 
         <div className="reveal mt-8 glass p-6 rounded-2xl flex flex-wrap items-center justify-center gap-6 text-sm text-slate-300 font-mono">
-          <span className="text-cyan-400 font-semibold">🔒 Data Protection Trained (Byte Capsule)</span>
-          <span className="text-slate-700">|</span>
-          <span>100% In Your Own Accounts</span>
-          <span className="text-slate-700">|</span>
+          <span className="text-cyan-400 font-semibold">🔒 Web App Security &amp; Data Protection Trained (Byte Capsule)</span>
+          <span className="text-slate-700 hidden sm:inline">|</span>
+          <span>100% In Your Own Cloud Accounts</span>
+          <span className="text-slate-700 hidden sm:inline">|</span>
           <span className="text-emerald-400">Fast 24–48h Working Demo</span>
+        </div>
+      </section>
+
+      {/* ═══════════ ENGAGEMENT PACKAGES ═══════════ */}
+      <section id="packages" className="relative z-10 py-24 px-6 lg:px-8 max-w-7xl mx-auto" ref={packagesRef}>
+        <div className="text-center mb-16 reveal">
+          <p className="text-violet-400 font-mono text-xs font-bold uppercase tracking-[0.25em] mb-3">● Structured Engagements</p>
+          <h2 className="text-3xl sm:text-5xl font-black text-white">How We Can <span className="gradient-text-violet">Work Together</span></h2>
+          <p className="text-slate-400 text-sm max-w-2xl mx-auto mt-4">
+            Transparent, flexible collaboration designed to deliver immediate ROI without long-term vendor lock-in.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+          
+          {/* Card 1 */}
+          <div className="reveal glass p-8 rounded-3xl border border-white/[0.08] card-3d flex flex-col justify-between">
+            <div>
+              <div className="inline-block px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold mb-4">
+                PHASE 1: DISCOVERY
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3">Security &amp; Workflow Audit</h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                A 360° forensic review of your team&apos;s manual bottlenecks, vendor contracts, data flows, and security vulnerabilities.
+              </p>
+              <div className="space-y-3 mb-8">
+                {[
+                  'Comprehensive bottleneck analysis',
+                  'Vendor contract & SLA risk review',
+                  'Data leak & compliance assessment',
+                  'Actionable technical blueprint & ROI map',
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-300">
+                    <svg className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <a
+              href="#contact"
+              className="w-full py-3 rounded-xl border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/10 font-bold text-xs sm:text-sm text-center transition-all duration-300"
+            >
+              Request Free Discovery Call →
+            </a>
+          </div>
+
+          {/* Card 2: Featured */}
+          <div className="reveal glass-glow p-8 sm:p-9 rounded-3xl border-2 border-cyan-400/60 card-3d flex flex-col justify-between relative shadow-2xl shadow-cyan-500/10">
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400 text-black text-xs font-black uppercase tracking-wider font-mono shadow-md">
+              ★ Most Popular
+            </div>
+            <div>
+              <div className="inline-block px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-semibold mb-4 mt-2">
+                PHASE 2: IMPLEMENTATION
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3">Custom Pipeline &amp; Tool Build</h3>
+              <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                Turnkey engineering of automated pipelines, deep reasoning engines, and bespoke internal web dashboards deployed in your cloud.
+              </p>
+              <div className="space-y-3 mb-8">
+                {[
+                  'Full production n8n / Python pipelines',
+                  'Private LLM prompt engineering & guardrails',
+                  'Optional custom web portal / internal UI',
+                  'Encrypted key vaults & zero third-party retention',
+                  '100% source code & configuration ownership',
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 text-xs text-white">
+                    <svg className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <a
+              href="#contact"
+              className="btn-shine w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-black font-bold text-xs sm:text-sm text-center shadow-lg shadow-cyan-500/25 transition-all duration-300"
+            >
+              Discuss a Custom Build →
+            </a>
+          </div>
+
+          {/* Card 3 */}
+          <div className="reveal glass p-8 rounded-3xl border border-white/[0.08] card-3d flex flex-col justify-between">
+            <div>
+              <div className="inline-block px-3 py-1 rounded-full bg-violet-950/60 border border-violet-500/30 text-violet-400 text-xs font-mono font-semibold mb-4">
+                PHASE 3: CONTINUITY
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-3">Dedicated Retainer &amp; SLA</h3>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                Proactive maintenance, performance tuning, API security rotation, and ongoing automation expansions as your team scales.
+              </p>
+              <div className="space-y-3 mb-8">
+                {[
+                  'Automated pipeline health checks & error-recovery alerts',
+                  'Ongoing prompt & LLM model optimizations',
+                  'Monthly security audit & key rotation',
+                  'Priority SLA response times for updates',
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-300">
+                    <svg className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <a
+              href="#contact"
+              className="w-full py-3 rounded-xl border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 font-bold text-xs sm:text-sm text-center transition-all duration-300"
+            >
+              Inquire About Retainers →
+            </a>
+          </div>
+
         </div>
       </section>
 
@@ -529,7 +686,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <p className="text-emerald-400 font-mono text-xs font-bold uppercase tracking-[0.25em] mb-3">● Interactive Estimate</p>
             <h2 className="text-3xl sm:text-4xl font-black text-white">Estimate Your <span className="gradient-text">Potential Savings</span></h2>
-            <p className="text-slate-500 text-xs mt-3 max-w-md mx-auto">A rough illustration based on your inputs — not a guaranteed or measured result.</p>
+            <p className="text-slate-400 text-xs mt-3 max-w-md mx-auto">A rough illustration based on your inputs — not a guaranteed or measured result.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -572,11 +729,11 @@ export default function Home() {
               </div>
               <div className="border-t border-white/[0.06] pt-6 grid grid-cols-2 gap-6">
                 <div>
-                  <div className="text-xs text-slate-500 font-mono">Monthly Hours Saved (est.)</div>
+                  <div className="text-xs text-slate-400 font-mono">Monthly Hours Saved (est.)</div>
                   <div className="text-2xl font-bold text-white font-mono mt-1">{monthly}h</div>
                 </div>
                 <div>
-                  <div className="text-xs text-slate-500 font-mono">Typical First Demo</div>
+                  <div className="text-xs text-slate-400 font-mono">Typical First Demo</div>
                   <div className="text-2xl font-bold text-emerald-400 font-mono mt-1">24 Hours</div>
                 </div>
               </div>
@@ -604,14 +761,14 @@ export default function Home() {
             </svg>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">Data Privacy & Security by <span className="gradient-text">Design</span></h2>
+          <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">Data Privacy &amp; Security by <span className="gradient-text">Design</span></h2>
           <p className="text-slate-300 max-w-2xl mx-auto text-sm leading-relaxed mb-10">
-            Backed by formal training in Web Application Security & Data Protection (Byte Capsule ISO 27001 accredited), every automation is engineered to protect your confidential business data and keep your operations completely private.
+            Backed by formal training in Web Application Security &amp; Data Protection (Byte Capsule), every automation is engineered to protect your confidential business data and keep your operations completely private.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 stagger-children">
             {[
-              { title: 'Zero Data Retention', desc: 'Your business data flows directly between your authorized tools. We never store, log, or resell your records on third-party servers.' },
+              { title: 'Zero Data Retention', desc: 'Your business data flows directly between your authorized tools. I never store, log, or resell your records on third-party servers.' },
               { title: 'Encrypted Key Vaults', desc: 'API keys and webhooks are secured with strict authentication, scoped permissions, and SSL encryption in transit.' },
               { title: '100% Client Ownership', desc: 'You own every workflow JSON, script, and API configuration. Complete independence with zero vendor lock-in.' },
             ].map((item, i) => (
@@ -632,8 +789,10 @@ export default function Home() {
         <div className="reveal-scale glass-glow p-10 sm:p-14 rounded-3xl relative overflow-hidden">
 
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">Let&apos;s Build Your <span className="gradient-text">Automation</span></h2>
-            <p className="text-slate-400 text-sm">
+            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">Let&apos;s Build Your <span className="gradient-text">Secure System</span></h2>
+            <p className="text-slate-300 text-sm">
+              Book a free 30-min security &amp; workflow audit or discuss a custom build.
+              <br />
               Fill out below or email directly →{' '}
               <a href="mailto:contact@shakibul.com" className="text-cyan-400 font-mono font-semibold hover:underline">contact@shakibul.com</a>
             </p>
@@ -644,7 +803,7 @@ export default function Home() {
               <svg className="w-14 h-14 text-emerald-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
               <h3 className="text-2xl font-bold text-white">Message Received!</h3>
               <p className="text-slate-300 text-sm max-w-md mx-auto">
-                Thank you{form.name ? `, ${form.name}` : ''}! Your message has been sent successfully. I&apos;ll reply from <span className="text-cyan-400 font-mono">contact@shakibul.com</span> within 2 hours.
+                Thank you{form.name ? `, ${form.name}` : ''}! Your message has been received successfully. I&apos;ll reply from <span className="text-cyan-400 font-mono">contact@shakibul.com</span> within 1 business day.
               </p>
               <button
                 type="button"
@@ -654,6 +813,7 @@ export default function Home() {
                     name: '',
                     email: '',
                     company: '',
+                    service: 'Free 30-Min Security & Workflow Audit',
                     message: '',
                     bot_trap_secondary: '',
                     company_fax_number: '',
@@ -700,6 +860,7 @@ export default function Home() {
                   ⚠️ {errorMsg}
                 </div>
               )}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">Your Name</label>
@@ -718,22 +879,42 @@ export default function Home() {
                   />
                 </div>
               </div>
-              <div>
-                <label className="block text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">Company Name</label>
-                <input
-                  type="text" placeholder="Company / Organization Name"
-                  value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })}
-                  className="input-field"
-                />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">Company / Organization</label>
+                  <input
+                    type="text" placeholder="Company Name"
+                    value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })}
+                    className="input-field"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">Primary Interest</label>
+                  <select
+                    value={form.service}
+                    onChange={(e) => setForm({ ...form, service: e.target.value })}
+                    className="input-field bg-slate-900/90 text-slate-200 cursor-pointer"
+                  >
+                    <option value="Free 30-Min Security & Workflow Audit">Free 30-Min Security &amp; Workflow Audit</option>
+                    <option value="Custom AI Automation Pipeline (n8n / Make / Python)">Custom AI Automation Pipeline</option>
+                    <option value="Forensic Document & Contract Intelligence">Forensic Document &amp; Contract Intelligence</option>
+                    <option value="Bespoke Internal Web Tool / Micro-Portal">Bespoke Internal Web Tool / Micro-Portal</option>
+                    <option value="Monthly Systems Maintenance & Retainer">Monthly Systems Maintenance &amp; Retainer</option>
+                    <option value="General Consultation / Other">General Consultation / Other</option>
+                  </select>
+                </div>
               </div>
+
               <div>
-                <label className="block text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">Problem Description</label>
+                <label className="block text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">Problem Description / Requirements</label>
                 <textarea
-                  rows={4} required placeholder="Describe your current operational bottleneck or required AI workflow automation..."
+                  rows={4} required placeholder="Describe your current manual bottleneck, contract review challenge, or desired automation pipeline..."
                   value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
                   className="input-field resize-none"
                 />
               </div>
+
               {/* Cloudflare Turnstile CAPTCHA (MEDIUM-1) */}
               <div className="flex justify-center my-2">
                 <div ref={turnstileRef} />
@@ -769,8 +950,8 @@ export default function Home() {
           </svg>
           <span>SHAKIBUL BOKHTIAR</span>
         </div>
-        <p className="text-xs text-slate-600 font-mono">AI & Workflow Automation Systems Engineer</p>
-        <p className="text-xs text-slate-600">
+        <p className="text-xs text-slate-500 font-mono">AI Systems, Workflow Automation &amp; Contract Intelligence Engineer</p>
+        <p className="text-xs text-slate-500">
           © 2026 Shakibul Bokhtiar · All rights reserved ·{' '}
           <a href="mailto:contact@shakibul.com" className="text-cyan-500 hover:underline">contact@shakibul.com</a>
         </p>

@@ -17,33 +17,36 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Shakibul Bokhtiar — AI & Workflow Automation Developer",
+  title: "Shakibul Bokhtiar — AI Workflow, Contract Intelligence & Systems Engineer",
   description:
-    "I build custom, reliable workflow automations that connect your everyday tools, data, and operations with AI — engineered with strict data privacy and zero external data retention.",
+    "I engineer secure AI automation pipelines, forensic document/contract intelligence, and custom internal business tools — built with strict data-privacy practices and zero third-party data retention.",
   keywords: [
     "Shakibul Bokhtiar",
-    "AI automation",
+    "AI automation engineer",
     "n8n workflows",
+    "contract intelligence",
+    "document audit AI",
     "workflow automation",
     "business process automation",
-    "secure automation pipelines",
+    "secure AI pipelines",
+    "custom internal tools",
     "data privacy automation",
     "custom integrations",
   ],
   authors: [{ name: "Shakibul Bokhtiar", url: "https://shakibul.com" }],
   openGraph: {
-    title: "Shakibul Bokhtiar — AI & Workflow Automation Developer",
+    title: "Shakibul Bokhtiar — AI Workflow, Contract Intelligence & Systems Engineer",
     description:
-      "Reliable workflow automations connecting your everyday business tools with AI, built with strict data privacy and zero third-party data retention.",
+      "Reliable AI workflow automations, forensic contract intelligence, and custom internal tools, built with strict data privacy and zero third-party data retention.",
     type: "website",
     locale: "en_US",
     siteName: "Shakibul Bokhtiar",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shakibul Bokhtiar — AI & Workflow Automation Developer",
+    title: "Shakibul Bokhtiar — AI Workflow, Contract Intelligence & Systems Engineer",
     description:
-      "Custom workflow automations that eliminate manual busywork, built with privacy-first standards.",
+      "Secure AI pipelines, deep contract intelligence, and custom internal tools engineered with privacy-first standards.",
   },
   robots: { index: true, follow: true },
 };
