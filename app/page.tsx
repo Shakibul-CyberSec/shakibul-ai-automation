@@ -359,7 +359,7 @@ export default function Home() {
       </nav>
 
       {/* ═══════════ HERO ═══════════ */}
-      <section id="hero" className="relative z-10 pt-40 pb-28 px-6 lg:px-8 max-w-7xl mx-auto text-center" ref={heroRef}>
+      <section id="hero" className="relative z-10 pt-28 sm:pt-36 md:pt-40 pb-28 px-6 lg:px-8 max-w-7xl mx-auto text-center" ref={heroRef}>
 
         {/* Status badge */}
         <div className="hero-text-reveal inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-cyan-950/40 border border-cyan-500/25 text-cyan-300 text-xs font-mono tracking-wider mb-10 backdrop-blur-md">
