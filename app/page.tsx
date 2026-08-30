@@ -233,6 +233,34 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
+  // Mobile navigation drawer
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    const onResize = () => {
+      if (window.innerWidth >= 768) setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [menuOpen]);
+
+  const navItems = [
+    { label: 'Capabilities', id: 'solutions' },
+    { label: 'Process', id: 'architecture' },
+    { label: 'Prototypes', id: 'work' },
+    { label: 'Engagement', id: 'packages' },
+    { label: 'Estimate', id: 'roi' },
+    { label: 'Privacy', id: 'security' },
+    { label: 'Contact', id: 'contact' },
+  ];
+
   return (
     <div className="relative min-h-screen">
 
@@ -273,15 +301,7 @@ export default function Home() {
           </a>
 
           <div className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
-            {[
-              { label: 'Capabilities', id: 'solutions' },
-              { label: 'Process', id: 'architecture' },
-              { label: 'Prototypes', id: 'work' },
-              { label: 'Engagement', id: 'packages' },
-              { label: 'Estimate', id: 'roi' },
-              { label: 'Privacy', id: 'security' },
-              { label: 'Contact', id: 'contact' },
-            ].map((item) => (
+            {navItems.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
@@ -293,13 +313,48 @@ export default function Home() {
             ))}
           </div>
 
-          <a
-            href="#contact"
-            className="btn-shine px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-500 text-black font-bold text-xs sm:text-sm shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2"
-          >
-            <span>Book Free Audit</span>
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href="#contact"
+              className="btn-shine px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-500 text-black font-bold text-xs sm:text-sm shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2"
+            >
+              <span>Book Free Audit</span>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+            </a>
+
+            {/* Mobile hamburger (3-line) toggle */}
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav-menu"
+              className="md:hidden flex flex-col justify-center items-center w-11 h-11 rounded-xl border border-white/10 bg-slate-900/60 hover:border-cyan-500/40 active:scale-95 transition-all"
+            >
+              <span className={`burger-line ${menuOpen ? 'burger-line--open-1' : ''}`} />
+              <span className={`burger-line my-[5px] ${menuOpen ? 'burger-line--open-2' : ''}`} />
+              <span className={`burger-line ${menuOpen ? 'burger-line--open-3' : ''}`} />
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile dropdown navigation */}
+        <div
+          id="mobile-nav-menu"
+          className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${menuOpen ? 'max-h-[420px] opacity-100' : 'max-h-0 opacity-0'}`}
+        >
+          <div className="px-6 pb-5 pt-1 bg-[#030712]/95 border-b border-white/[0.06] flex flex-col gap-1">
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={() => setMenuOpen(false)}
+                className="px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-cyan-500/10 transition-colors"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
         </div>
       </nav>
 
